@@ -37,7 +37,7 @@ for ($i=0; $i -ne $loopExecutionTime; $i++)
     }
     else
     {
-      Write-Output "There are no files in $path with more than $date days."
+      Write-Output "No files found in $path that are more than $date days old."
     }
   }
 }
