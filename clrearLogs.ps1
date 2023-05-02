@@ -31,7 +31,7 @@ for ($i=0; $i -ne $loopExecutionTime; $i++)
         Write-Output $file.Name
       }
 
-      $cmd = "Get-ChildItem -Include *.log -Recurse | Where-Object {(`$_.LastWriteTime -lt (Get-Date).AddDays(-$date) )} | Remove-Item"
+      $cmd = "Get-ChildItem -Include *.log,*.txt,*.json -Recurse | Where-Object {(`$_.LastWriteTime -lt (Get-Date).AddDays(-$date))} | Remove-Item"
       Write-Output "Exec: $cmd"
       Invoke-Expression $cmd
     }
