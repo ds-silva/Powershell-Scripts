@@ -20,28 +20,31 @@ function Test-PathsExist {
         [string[]]$paths
     )
 
-    Write-Host "START - TEST PATHS"
-    Write-Host ""
+    Write-Host "+-+---------------------------------------------------------------------------------------+"
+    Write-Host "|                             START - TEST PATHS                                          |"
+    Write-Host "+-+---------------------------------------------------------------------------------------+"
 
     $pathNotFound = $false
     foreach ($path in $paths) {
 
         if (Test-Path -Path $path -PathType Leaf) {
-            Write-Host "File in path $path found."
+            Write-Host -ForegroundColor Green "|#| File in path $path found."
         }
         else {
-            Write-Error "File in path $path not found."
+            Write-Error "|#| File in path $path not found."
             $pathNotFound = $true
         }
     }
     if ($pathNotFound) {
-        Write-Host ""
-        Write-Host "END - TEST PATHS"
+        Write-Host "+-+---------------------------------------------------------------------------------------+"
+        Write-Host "|                            END - TEST PATHS                                             |"
+        Write-Host "+-+---------------------------------------------------------------------------------------+"
         exit 1
     }
 
-    Write-Host ""
-    Write-Host "END - TEST PATHS"
+    Write-Host "+-+---------------------------------------------------------------------------------------+"
+    Write-Host "|                            END - TEST PATHS                                             |"
+    Write-Host "+-+---------------------------------------------------------------------------------------+`n"
 }
 
 function Move-OldFiles {
@@ -49,13 +52,13 @@ function Move-OldFiles {
         [string[]]$oldFilesToMove
     )
 
-    Write-Host ""
-    Write-Host "INIT - MOVING OLD FILES"
-    Write-Host ""
+    Write-Host "+-+---------------------------------------------------------------------------------------+"
+    Write-Host "|                            INIT - MOVE/RENAME OLD FILES                                 |"
+    Write-Host "+-+---------------------------------------------------------------------------------------+"
 
     foreach ($file in $oldFilesToMove) {
 
-        Write-Host "Moving file $file"
+        Write-Host "|#| Moving file $file"
     
         $fileName = [System.IO.Path]::GetFileNameWithoutExtension($file)
         $fileExtension = [System.IO.Path]::GetExtension($file)
@@ -63,25 +66,24 @@ function Move-OldFiles {
         $oldFilesDestination = Join-Path -Path $folderToOldFiles -ChildPath $newFileName
     
         if (Test-Path -Path $oldFilesDestination -PathType Leaf) {
-            Write-Warning "File $oldFilesDestination already exists, deleting it..."
-    
+            Write-Host -ForegroundColor red "|#| The file on $oldFilesDestination already exists, deleting it."
             Remove-Item -Path $oldFilesDestination
-            Write-Host "File $oldFilesDestination removed successfully `n"
         }
     
         $fileInfo = Get-Item -Path $file
         $lastWriteTime = $fileInfo.LastWriteTime
-        Write-Host "Last Update in $lastWriteTime"
-    
+        
         Move-Item -Path $file -Destination $oldFilesDestination
-        Write-Host "Old file $file moved successfully `n"
+        
+        Write-Host -ForegroundColor Green "|#| Old file $file moved successfully"
+        Write-Host "|#| Last Update in $lastWriteTime"
     
-        Write-Host "------------------------------------------------------------------------------------------------"
+        Write-Host "+-+---------------------------------------------------------------------------------------+"
     }
 
-    Write-Host ""
-    Write-Host "END - MOVING OLD FILES"
-    Write-Host ""
+    Write-Host "+-+---------------------------------------------------------------------------------------+"
+    Write-Host "|                            END - MOVE/RENAME OLD FILES                                  |"
+    Write-Host "+-+---------------------------------------------------------------------------------------+`n"
 }
 
 function Add-NewFilesToProductionEnv {
@@ -89,23 +91,26 @@ function Add-NewFilesToProductionEnv {
         [string[]]$newFiles
     )
 
-    Write-Host "INIT - ADD NEW FILES"
-    Write-Host ""
+    Write-Host "+-+---------------------------------------------------------------------------------------+"
+    Write-Host "|                            INIT - ADD NEW FILES                                         |"
+    Write-Host "+-+---------------------------------------------------------------------------------------+"
 
     foreach ($file in $newFiles) {
-        Write-Host "Adding new file $file"
+        Write-Host "|#| Adding new file $file"
 
         Copy-Item -Path $file -Destination $productionEnv
 
         $fileInfo = Get-Item -Path $file
         $lastWriteTime = $fileInfo.LastWriteTime
-        Write-Host "Last update in $lastWriteTime"
-
-        Write-Host "New file $file added to folder $productionEnv `n"
+        
+        Write-Host "|#| Last file update in $lastWriteTime"
+        Write-Host -ForegroundColor Green "|#| File $file added  `n|#| Folder: $productionEnv"
+        Write-Host "|+|"
     }
 
-    Write-Host ""
-    Write-Host "END - ADD NEW FILES"
+    Write-Host "+-+---------------------------------------------------------------------------------------+"
+    Write-Host "|                            END - ADD NEW FILES                                          |"
+    Write-Host "+-+---------------------------------------------------------------------------------------+`n"
 
 }
 
